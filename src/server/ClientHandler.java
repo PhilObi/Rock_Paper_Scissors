@@ -18,18 +18,25 @@ public class ClientHandler implements Runnable, PropertyChangeListener {
 	private InputListener lis1;
 	private InputListener lis2;
 	
-	
+	/**
+	 * Passes in both clients sockets from the server after
+	 * two client have connected.
+	 * @param socket1
+	 * @param socket2
+	 */
 	public ClientHandler(Socket socket1, Socket socket2) {
 		this.socket1 = socket1;
 		this.socket2 = socket2;
 		
-		// Use sockets to create objectoutputstream
+		// Use sockets to create objectoutputstreams
 		try {
 			oos1 = new ObjectOutputStream(this.socket1.getOutputStream());
 			oos2 = new ObjectOutputStream(this.socket2.getOutputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		// Create listeners to check for inputs
 		lis1 = new InputListener(1, socket1, this);
 		lis2 = new InputListener(2, socket2, this);
 	}
@@ -37,6 +44,7 @@ public class ClientHandler implements Runnable, PropertyChangeListener {
 	
 	@Override
 	public void run() {
+		// Start listeners
 		new Thread(lis1).start();
 		new Thread(lis2).start();
 	}

@@ -66,12 +66,14 @@ public class Server extends JFrame {
 	     * Text area to display server status
 	     */
 	    textArea = new JTextArea();
+	    textArea.setEditable(false);
+	    textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
 	    JScrollPane scrollable = new JScrollPane(textArea); 
 	    scrollable.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	    textArea.setLineWrap(true);
 	    textArea.setForeground(Color.YELLOW);
 	    textArea.setBackground(Color.DARK_GRAY);
-	    contentPane.add(scrollable, BorderLayout.CENTER);
+	    contentPane.add(scrollable);
 	    
 	    /**
 	     * Button to Start the server
@@ -84,7 +86,7 @@ public class Server extends JFrame {
 	    		// Disable button
 	    		startButton.setEnabled(false);
 	    		startButton.setVisible(false);
-	    		// Start server
+	    		// Start server thread 
 	    		ServerStart ss = new ServerStart();
 	    		Thread go = new Thread(ss);
 	    		go.start();
