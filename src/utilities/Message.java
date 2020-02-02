@@ -6,6 +6,7 @@ public class Message implements Serializable {
 	// Attributes
 	private Player player;
 	private String message;
+	private String type;
 	
 	/**
 	 * Default Contructor
@@ -19,10 +20,11 @@ public class Message implements Serializable {
 	 * @param player
 	 * @param message
 	 */
-	public Message(Player player, String message) {
+	public Message(Player player, String message, String type) {
 		super();
 		this.player = player;
 		this.message = message;
+		this.type = type;
 	}
 
 	/**
@@ -53,13 +55,29 @@ public class Message implements Serializable {
 		this.message = message;
 	}
 
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Message [player=" + player + ", message=" + message + "]";
+		return "Message [player=" + player + ", message=" + message + ", type=" + type + "]";
 	}
+
+	
 	
 	
 }

@@ -11,7 +11,8 @@ public class Player implements Serializable {
 	// Attributes
 	private String nickName;
 	private int score;
-	
+	private String Choice;
+
 	//Constructor
 	public Player() {
 
@@ -56,13 +57,27 @@ public class Player implements Serializable {
 		this.score = score + 1;
 	}
 
-	
+	/**
+	 * @return the choice
+	 */
+	public String getChoice() {
+		return Choice;
+	}
+
+	/**
+	 * @param choice the choice to set
+	 */
+	public void setChoice(String choice) {
+		Choice = choice;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Player [nickName=" + nickName + ", score=" + score + "]";
+		return "Player [nickName=" + nickName + ", score=" + score + ", Choice=" + Choice + "]";
 	}
+	
 	
 }

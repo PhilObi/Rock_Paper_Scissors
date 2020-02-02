@@ -62,8 +62,7 @@ public class ServerStart implements Runnable{
 			}
 			catch (IOException e)
 			{
-				//e.printStackTrace();
-				System.out.println("We fucked up");
+				e.printStackTrace();
 			}
 		}
 		

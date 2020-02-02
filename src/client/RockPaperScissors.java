@@ -37,9 +37,16 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import javax.swing.ImageIcon;
 
 public class RockPaperScissors extends JFrame implements PropertyChangeListener{
-
+	// Constants
+	final private String INIT = "init";
+	final private String CHAT = "chat";
+	final private String STATUS = "status";
+	final private String GAME = "game";
+	
+	// Attributes
 	private JPanel contentPane;
 	private JTextField chatMessage;
 	private Player player;
@@ -47,7 +54,11 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 	private ObjectOutputStream oos;
 	private InputListener lis;
 	private JTextArea textArea;
+	private JTextArea textArea1;
 	private Message message;
+	private JLabel player2;
+	private JLabel playerScore1;
+	private JLabel playerScore2;
 
 	/**
 	 * Create the frame.
@@ -99,13 +110,14 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 		 * ScrollPane for text area
 		 */
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(414, 29, 315, 341);
+		scrollPane.setBounds(414, 121, 315, 249);
 		contentPane.add(scrollPane);
 		
 		/**
-		 * Text area for chat and game status
+		 * Text area for chat
 		 */
 		textArea = new JTextArea();
+		textArea.setLineWrap(true);
 		textArea.setEditable(false);
 		textArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
 		textArea.setBackground(Color.DARK_GRAY);
@@ -118,7 +130,7 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 		JLabel label = new JLabel("");
 		label.setBackground(Color.WHITE);
 		label.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		label.setBounds(404, 11, 335, 399);
+		label.setBounds(404, 104, 335, 306);
 	    label.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), 
 	    		"Chat", TitledBorder.LEADING, TitledBorder.TOP,
 	    		null, new Color(255, 255, 0)));
@@ -139,7 +151,7 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 				}
 				else {
 					// add to message object with current players info
-					message = new Message(player, msg);
+					message = new Message(player, msg, CHAT);
 					
 					// Send message 
 					try {
@@ -149,7 +161,8 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 					}
 					
 					// Output the message to the textArea
-					textArea.append(player.getNickName() + ": " + message.getMessage() + "\n");
+					textArea.append("[" + player.getNickName() + "] " + 
+							message.getMessage() + "\n");
 					
 					// Clear chat message
 					chatMessage.setText("");
@@ -159,15 +172,150 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 		sendMessage.setBounds(650, 375, 79, 25);
 		sendMessage.setBackground(Color.LIGHT_GRAY);
 		contentPane.add(sendMessage);
+		
+		/**
+		 * Rock button
+		 */
+		JButton rock = new JButton("Rock");
+		rock.setForeground(Color.DARK_GRAY);
+		rock.setBackground(Color.YELLOW);
+		rock.setBounds(36, 376, 89, 23);
+		contentPane.add(rock);
+		
+		/**
+		 * Scissors button
+		 */
+		JButton scissors = new JButton("Scissors");
+		scissors.setForeground(Color.DARK_GRAY);
+		scissors.setBackground(Color.YELLOW);
+		scissors.setBounds(272, 376, 89, 23);
+		contentPane.add(scissors);
+		
+		/**
+		 * Paper button
+		 */
+		JButton papper = new JButton("Paper");
+		papper.setForeground(Color.DARK_GRAY);
+		papper.setBackground(Color.YELLOW);
+		papper.setBounds(154, 376, 89, 23);
+		contentPane.add(papper);
+		
+		/**
+		 * Player 1 name label
+		 */
+		JLabel player1 = new JLabel("");
+		player1.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		player1.setForeground(Color.YELLOW);
+		player1.setBounds(36, 11, 118, 24);
+		player1.setText(player.getNickName());
+		contentPane.add(player1);
+		
+		/**
+		 * Player 2 name label
+		 */
+		player2 = new JLabel((String) null);
+		player2.setHorizontalAlignment(SwingConstants.TRAILING);
+		player2.setForeground(Color.YELLOW);
+		player2.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		player2.setBounds(243, 11, 118, 24);
+		contentPane.add(player2);
+		
+		JLabel versus = new JLabel("VS");
+		versus.setForeground(Color.YELLOW);
+		versus.setFont(new Font("Times New Roman", Font.PLAIN, 13));
+		versus.setBounds(189, 29, 27, 14);
+		contentPane.add(versus);
+		
+		/**
+		 * Status label border
+		 */
+		JLabel label_1 = new JLabel("");
+		label_1.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		label_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"),
+				"Status", TitledBorder.LEADING,
+				TitledBorder.TOP, null, new Color(255, 255, 0)));
+		label_1.setBackground(Color.WHITE);
+		label_1.setBounds(404, 11, 335, 90);
+		contentPane.add(label_1);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane_1.setBounds(414, 25, 315, 68);
+		contentPane.add(scrollPane_1);
+		
+		/**
+		 * Text area for game status
+		 */
+		textArea1 = new JTextArea();
+		textArea1.setLineWrap(true);
+		textArea1.setEditable(false);
+		textArea1.setFont(new Font("Monospaced", Font.PLAIN, 13));
+		textArea1.setBackground(Color.DARK_GRAY);
+		textArea1.setForeground(Color.YELLOW);
+		scrollPane_1.setViewportView(textArea1);
+		
+		/**
+		 * Player 1 Score label
+		 */
+		playerScore1 = new JLabel("");
+		playerScore1.setForeground(Color.YELLOW);
+		playerScore1.setHorizontalAlignment(SwingConstants.CENTER);
+		playerScore1.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+		playerScore1.setBounds(59, 40, 48, 38);
+		playerScore1.setText(Integer.toString(player.getScore()));
+		contentPane.add(playerScore1);
+		
+		/**
+		 * Player 2 Score label
+		 */
+		playerScore2 = new JLabel("");
+		playerScore2.setForeground(Color.YELLOW);
+		playerScore2.setHorizontalAlignment(SwingConstants.CENTER);
+		playerScore2.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+		playerScore2.setBounds(291, 40, 48, 38);
+		contentPane.add(playerScore2);
+		
+		/**
+		 * Send out an introduction message object when
+		 * the gui is first created.
+		 */
+		String introMsg = " has joined the Game! \nPick Rock, Paper or Scissors to play.";
+		message = new Message(player, introMsg, INIT);
+		
+		try {
+			oos.writeObject(message);
+		} catch (IOException e2) {
+			e2.printStackTrace();
+		}
+		
 	}
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		// Read in the new message and display
 		Message newMessage = (Message)event.getNewValue();
-		// Output the message to the textArea
-		textArea.append(newMessage.getPlayer().getNickName() + ": " + newMessage.getMessage() + "\n");
-
+		
+		if(newMessage.getType().equals(INIT)) {
+			// Initialize player label fields
+			player2.setText(newMessage.getPlayer().getNickName());
+			
+			// Initialize player scores
+			playerScore2.setText(Integer.toString(newMessage.getPlayer().getScore()));
+						
+			// Output the status message to the textArea1
+			textArea1.append(newMessage.getPlayer().getNickName() +
+					newMessage.getMessage() + "\n");
+			
+		}else if(newMessage.getType().equals(STATUS)) {
+			
+			
+		}else if(newMessage.getType().equals(CHAT)) {
+			// Output the message to the textArea
+			textArea.append("[" + newMessage.getPlayer().getNickName() + "] " +
+					newMessage.getMessage() + "\n");
+			
+		}else {
+			
+		}
 	}
-	
 }

@@ -87,9 +87,7 @@ public class Client extends JFrame {
 		JLabel startImage = new JLabel("");
 		startImage.setBounds(25, 5, 454, 150);
 		// Image Source: https://www.esquireme.com/sites/default/files/styles/full_img/public/images/2017/05/29/rock_paper_scissors__2x.png?itok=EB8fRWP9
-		startImage.setIcon(new ImageIcon(
-				"C:\\Users\\638981\\Documents\\WorkSpace 311\\"
-				+ "RockPaperScissors\\res\\rock_paper_scissors1.png"));
+		startImage.setIcon(new ImageIcon("res/rock_paper_scissors.png"));
 		
 		contentPane.setLayout(null);
 		contentPane.add(nicknameLabel);
@@ -128,8 +126,7 @@ public class Client extends JFrame {
 				 * Set nickname to unknown if field is left empty
 				 */
 				if(nick == null || nick.equals("")) {
-					nick = "Unknown(In other words im too lazy to type a "
-							+ "single letter)";
+					nick = "Unknown";
 				}else {
 					nick = nickName.getText();
 				}
@@ -154,7 +151,10 @@ public class Client extends JFrame {
 							"Invalid IP Address(-__-)");
 					return;
 				} catch (IOException e1) {
-					e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, 
+							"Connection Faliure...");
+					return;
+					//e1.printStackTrace();
 				}
 				
 				// Set current GUI to invisible
