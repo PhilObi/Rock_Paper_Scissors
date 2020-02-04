@@ -68,7 +68,7 @@ public class Player implements Serializable {
 	 * @param choice the choice to set
 	 */
 	public void setChoice(String choice) {
-		Choice = choice;
+		this.Choice = choice;
 	}
 
 	/* (non-Javadoc)

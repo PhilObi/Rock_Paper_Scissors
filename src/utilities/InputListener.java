@@ -33,13 +33,14 @@ public class InputListener implements Runnable {
 			e.printStackTrace();
 		}
 		
-		while(true) {
+		Boolean connected = true;
+		while(connected) {
 			try {
 				notifyObservers(ois.readObject());	
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
-				e.printStackTrace();
+				connected = false;
 			}
 		}
 	}
