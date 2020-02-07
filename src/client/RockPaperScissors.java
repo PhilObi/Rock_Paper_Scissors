@@ -47,10 +47,11 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 	final private String INIT = "init";
 	final private String CHAT = "chat";
 	final private String STATUS = "status";
-	final private String GAME = "game";
 	final private String ROCK = "rock";
 	final private String PAPER = "paper";
 	final private String SCISSORS = "scissors";
+	final private String REVEAL = "reveal";
+	final private String AGAIN = "again";
 	
 	// Attributes
 	private JPanel contentPane;
@@ -61,12 +62,19 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 	private JTextArea textArea1;
 	private Message message;
 	private JLabel player2;
-	private JLabel playerScore1;
-	private JLabel playerScore2;
 	private JLabel playerRock2;
 	private JLabel playerPaper2;
 	private JLabel playerScissors2;
 	private Player player;
+	private JLabel playerRock1;
+	private JLabel playerPaper1;
+	private JLabel playerScissors1;
+	private boolean lockedIn = false;
+	private JLabel resultLabel;
+	private JButton lockChoice;
+	private JButton rock;
+	private JButton paper;
+	private JButton scissors;
 
 	/**
 	 * Create the frame.
@@ -99,6 +107,7 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
 		
 		/**
 		 * Text field for chat
@@ -234,30 +243,9 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 		scrollPane_1.setViewportView(textArea1);
 		
 		/**
-		 * Player 1 Score label
-		 */
-		playerScore1 = new JLabel("");
-		playerScore1.setForeground(Color.YELLOW);
-		playerScore1.setHorizontalAlignment(SwingConstants.CENTER);
-		playerScore1.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-		playerScore1.setBounds(59, 40, 48, 38);
-		playerScore1.setText(Integer.toString(player.getScore()));
-		contentPane.add(playerScore1);
-		
-		/**
-		 * Player 2 Score label
-		 */
-		playerScore2 = new JLabel("");
-		playerScore2.setForeground(Color.YELLOW);
-		playerScore2.setHorizontalAlignment(SwingConstants.CENTER);
-		playerScore2.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-		playerScore2.setBounds(291, 40, 48, 38);
-		contentPane.add(playerScore2);
-		
-		/**
 		 * Element images
 		 */
-		JLabel playerRock1 = new JLabel("");
+		playerRock1 = new JLabel("");
 		playerRock1.setIcon(new ImageIcon("res/rock.PNG"));
 		playerRock1.setBounds(22, 105, 174, 160);
 		playerRock1.setVisible(false);
@@ -269,19 +257,19 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 		playerRock2.setVisible(false);
 		contentPane.add(playerRock2);
 		
-		JLabel playerPaper1 = new JLabel("");
+		playerPaper1 = new JLabel("");
 		playerPaper1.setIcon(new ImageIcon("res/paper.PNG"));
 		playerPaper1.setBounds(22, 105, 174, 160);
 		playerPaper1.setVisible(false);
 		contentPane.add(playerPaper1);
 
-		playerPaper2 = new JLabel("");
+		playerPaper2 = new JLabel(""); 
 		playerPaper2.setIcon(new ImageIcon("res/paper.PNG"));
 		playerPaper2.setBounds(230, 105, 174, 160);
 		playerPaper2.setVisible(false);
 		contentPane.add(playerPaper2);
 		
-		JLabel playerScissors1 = new JLabel("");
+		playerScissors1 = new JLabel("");
 		playerScissors1.setIcon(new ImageIcon("res/scissors.PNG"));
 		playerScissors1.setBounds(22, 105, 174, 160);
 		playerScissors1.setVisible(false);
@@ -296,18 +284,16 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 		/**
 		 * Rock button on hover displays image
 		 */
-		JButton rock = new JButton("Rock");
-		rock.addMouseListener(new MouseAdapter() {
+		rock = new JButton("Rock");
+		rock.addActionListener(new ActionListener() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void actionPerformed(ActionEvent e) {
 				// Set paper or scissors to invisible
 				playerPaper1.setVisible(false);
 				playerScissors1.setVisible(false);
 				
 				// set rock visibility to true
 				playerRock1.setVisible(true);
-				
-				// Set player choice
 				player.setChoice(ROCK);
 			}
 		});
@@ -319,7 +305,7 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 		/**
 		 * Paper button
 		 */
-		JButton paper = new JButton("Paper");
+		paper = new JButton("Paper");
 		paper.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -329,8 +315,6 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 				
 				// Set paper to visible
 				playerPaper1.setVisible(true);
-				
-				// Set player choice to paper
 				player.setChoice(PAPER);
 			}
 		});
@@ -342,7 +326,7 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 		/**
 		 * Scissors button
 		 */
-		JButton scissors = new JButton("Scissors");
+		scissors = new JButton("Scissors");
 		scissors.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -352,8 +336,6 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 				
 				// Set scissors to visible
 				playerScissors1.setVisible(true);
-				
-				// Set player choice to scissors
 				player.setChoice(SCISSORS);
 			}
 		});
@@ -362,10 +344,12 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 		scissors.setBounds(284, 288, 89, 44);
 		contentPane.add(scissors);
 		
+		
+		
 		/**
 		 * Lock in choice and run game options
 		 */
-		JButton lockChoice = new JButton("Lock In Choice");
+		lockChoice = new JButton("Lock In Choice");
 		lockChoice.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -374,10 +358,15 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 							"Choice not selected!");
 					return;
 				}else {
+					String nickname = player.getNickName();
 					String choice = player.getChoice();
+					int score = player.getScore();
+					
+					Player p = new Player(nickname, score, choice);
 					// Send status message
-					message = new Message(player, " has chosen ", STATUS);
+					message = new Message(p, " has chosen ", STATUS);
 					textArea1.append("You have chosen " + choice + "\n");
+					lockedIn = true;
 					lockChoice.setBackground(Color.GREEN);
 					
 					try {
@@ -392,6 +381,13 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 		lockChoice.setBackground(Color.LIGHT_GRAY);
 		lockChoice.setBounds(111, 362, 174, 37);
 		contentPane.add(lockChoice);
+		
+		resultLabel = new JLabel("---");
+		resultLabel.setForeground(Color.YELLOW);
+		resultLabel.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		resultLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		resultLabel.setBounds(36, 56, 325, 37);
+		contentPane.add(resultLabel);
 		
 		/**
 		 * Send out an introduction message object when
@@ -413,94 +409,123 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 		// Read in the new message
 		Message newMessage = (Message)event.getNewValue();
 		
+		// Current player choice
+		String cChoice = player.getChoice();
+		// Current player nickname
+		String cNickname = player.getNickName();
+		//Current score
+		int cScore = player.getScore();
+		
 		// Received nickname
 		String rNickname = newMessage.getPlayer().getNickName();
-		// Received score
-		String rScore = Integer.toString(newMessage.getPlayer().getScore());
+
 		// Received message
 		String rMessage = newMessage.getMessage();
 		// Received message type
 		String rType = newMessage.getType();
 		// Received Choice
 		String rChoice = newMessage.getPlayer().getChoice();
-
+		
+		// String to hold result to send back to other player
+		String result = null;
 		
 		if(rType.equals(INIT)) {
 			// Initialize player label fields
 			player2.setText(rNickname);
-			
-			// Initialize player scores
-			playerScore2.setText(rScore);
 						
 			// Output the status message to the textArea1
 			textArea1.append(rNickname + rMessage + "\n");
 			
 		}else if(rType.equals(STATUS)) {
-			textArea1.append(rNickname + rMessage + rChoice + "\n");
-//			if(player.getChoice() != null ) {
-//				// Reveal player choice 
-//				if(rMessage.equals(ROCK)) {
-//					playerRock2.setVisible(true);
-//				}else if(rMessage.equals(PAPER)) {
-//					playerPaper2.setVisible(true);
-//				}else if(rMessage.equals(SCISSORS)) {
-//					playerScissors2.setVisible(true);
-//				}else {
-//					// Do nothing 
-//				}
-//				
-//				String winner = getResult(player.getChoice(), rMessage);
-//				if(winner.equals("tie")) {
-//					textArea1.append("Tie!!!!!!\n");
-//				}else {
-//					message = new Message();
-//					textArea1.append(winner +" is the WINNER!!!!!!\n");
-//				}
-//			}else {
-//				// Do nothing
-//			}
-//		
-//			
+			// Check if recieving player has locked in 
+			if(lockedIn == false) {
+				textArea1.append("Opponent has made a choice!\n");
+			}else {
+				if(rChoice.equals(ROCK)) {
+					playerRock2.setVisible(true);
+				}else if(rChoice.equals(PAPER)) {
+					playerPaper2.setVisible(true);
+				}else {
+					playerScissors2.setVisible(true);
+				}
+				
+				// Game logic 
+				if(cChoice.equals(rChoice)) {
+					result = "It's a tie!!!!";
+					
+				}else if(cChoice.equals(ROCK)) {
+					if(rChoice.equals(SCISSORS)) {
+						result = cNickname + " Wins!";
+						
+					}else if(rChoice.equals(PAPER)) {
+						result = rNickname + " Wins!";
+						
+					}
+				}else if(cChoice.equals(PAPER)) {
+					if(rChoice.equals(ROCK)) {
+						result = cNickname + " Wins!";
+						
+					}else if(rChoice.equals(SCISSORS)) {
+						result = rNickname + " Wins!";
+						
+					}
+				}else if(cChoice.equals(SCISSORS)) {
+					if(rChoice.equals(PAPER)) {
+						result = cNickname + " Wins!";
+						
+					}else if(rChoice.equals(ROCK)) {
+						result = rNickname + " Wins!";
+						
+					}
+				}else {
+					// Do nothing 
+				}
+				
+				
+				resultLabel.setText(result);
+				
+				// Send winner information to other player
+				Player p = new Player(cNickname, cScore, cChoice);
+				message = new Message(p, result, REVEAL);
+				try {
+					oos.writeObject(message);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
+				// update Buttons
+				rock.setEnabled(false);
+				paper.setEnabled(false);
+				scissors.setEnabled(false);
+				lockChoice.setVisible(false);
+				
+			}
+			
 		}else if(rType.equals(CHAT)) {
 			// Output the message to the textArea
 			textArea.append("[" + rNickname + "] " + rMessage + "\n");
+		
+		/**
+		 *  Reveal message contains information about winner and makes,
+		 *  necessary changes to gui
+		 */
+		}else if(rType.equals(REVEAL)){
+			if(rChoice.equals(ROCK)) {
+				playerRock2.setVisible(true);
+			}else if(rChoice.equals(PAPER)) {
+				playerPaper2.setVisible(true);
+			}else{
+				playerScissors2.setVisible(true);
+			}
+			// Displayer Winner 
+			resultLabel.setText(rMessage);
 			
-		}else {
-			// Do nothing
+			// Update buttons
+			rock.setEnabled(false);
+			paper.setEnabled(false);
+			scissors.setEnabled(false);
+			lockChoice.setVisible(false);
+
 		}
-	}
-	
-	/**
-	 * Compares both players choices and returns the winner
-	 * @param p1
-	 * @param p2
-	 * @return winner
-	 */
-	public String getResult(String p1 , String p2) {
-		String winner = "";
-		if(p1.equals(p2)) {
-			winner = "tie";
-		}else if(p1.equals(ROCK)) {
-			if(p2.equals(SCISSORS)) {
-				winner = p1;
-			}else if(p2.equals(PAPER)) {
-				winner = p2;
-			}
-		}else if(p1.equals(PAPER)) {
-			if(p2.equals(ROCK)) {
-				winner = p1;
-			}else if(p2.equals(SCISSORS)) {
-				winner = p2;
-			}
-		}else if(p1.equals(SCISSORS)) {
-			if(p2.equals(PAPER)) {
-				winner = p1;
-			}else if(p2.equals(ROCK)) {
-				winner = p2;
-			}
-		}else {
-			// Do nothing 
-		}
-		return winner;
 	}
 }

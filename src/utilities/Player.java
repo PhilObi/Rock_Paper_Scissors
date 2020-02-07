@@ -11,9 +11,9 @@ public class Player implements Serializable {
 	// Attributes
 	private String nickName;
 	private int score;
-	private String Choice;
+	private String choice;
 
-	//Constructor
+	//Constructor 
 	public Player() {
 
 	}
@@ -26,6 +26,19 @@ public class Player implements Serializable {
 	 */
 	public Player(String nickName) {
 		this.nickName = nickName;
+	}
+	
+	/**
+	 * Initializes player nick name score and choice;
+	 * @param nickName
+	 * @param score
+	 * @param choice
+	 */
+	public Player(String nickName, int score, String choice) {
+		super();
+		this.nickName = nickName;
+		this.score = score;
+		this.choice = choice;
 	}
 
 	// Getters and Setters
@@ -54,21 +67,21 @@ public class Player implements Serializable {
 	 * @param score the score to set
 	 */
 	public void setScore(int score) {
-		this.score = score + 1;
+		this.score += 1;
 	}
 
 	/**
 	 * @return the choice
 	 */
 	public String getChoice() {
-		return Choice;
+		return choice;
 	}
 
 	/**
 	 * @param choice the choice to set
 	 */
 	public void setChoice(String choice) {
-		this.Choice = choice;
+		this.choice = choice;
 	}
 
 	/* (non-Javadoc)
@@ -76,7 +89,7 @@ public class Player implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "Player [nickName=" + nickName + ", score=" + score + ", Choice=" + Choice + "]";
+		return "Player [nickName=" + nickName + ", score=" + score + ", Choice=" + choice + "]";
 	}
 	
 	
