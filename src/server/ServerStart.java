@@ -30,13 +30,6 @@ public class ServerStart implements Runnable{
 		 */
 		try {
 			Server.textArea.append("[" +LocalTime.now() + "] Starting Server... \n");
-//			Thread.sleep(3000);
-//			Server.textArea.append("[" +LocalTime.now() + "] Configuring Skynet... \n");
-//			Thread.sleep(4000);
-//			Server.textArea.append("[" +LocalTime.now() + "] Nothing is really happening... \n");
-//			Thread.sleep(2000);
-//			Server.textArea.append("[" +LocalTime.now() + "] This is for dramatic effect... \n");
-//			Thread.sleep(4000);
 			Server.textArea.append("[" +LocalTime.now() + "] Server is up and running! \n");
 			Thread.sleep(1000);
 		} catch (InterruptedException e1) {

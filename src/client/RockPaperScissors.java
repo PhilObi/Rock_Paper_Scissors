@@ -38,6 +38,8 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
+
 import javax.swing.ImageIcon;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.EtchedBorder;
@@ -51,7 +53,7 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 	final private String PAPER = "paper";
 	final private String SCISSORS = "scissors";
 	final private String REVEAL = "reveal";
-	final private String AGAIN = "again";
+	final private String LEAVING = "leaving";
 	
 	// Attributes
 	private JPanel contentPane;
@@ -75,12 +77,19 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 	private JButton rock;
 	private JButton paper;
 	private JButton scissors;
+	private JLabel rematch;
+	private JButton againYes;
+	private JButton againNo;
+	private Socket socket;
+	private String ip;
 
 	/**
 	 * Create the frame.
 	 */
-	public RockPaperScissors(Player player, Socket socket) {
+	public RockPaperScissors(Player player, Socket socket, String ip) {
 		this.player = player;
+		this.socket = socket;
+		this.ip = ip;
 		/**
 		 * Create Object Output Stream with passed in socket
 		 */
@@ -389,6 +398,69 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 		resultLabel.setBounds(36, 56, 325, 37);
 		contentPane.add(resultLabel);
 		
+		rematch = new JLabel("Play Again?");
+		rematch.setHorizontalAlignment(SwingConstants.CENTER);
+		rematch.setForeground(Color.YELLOW);
+		rematch.setFont(new Font("Times New Roman", Font.PLAIN, 17));
+		rematch.setBounds(140, 330, 112, 37);
+		rematch.setVisible(false);
+		contentPane.add(rematch);
+		
+		againYes = new JButton("Yes");
+		againYes.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Reset every thing for a new game
+				rock.setEnabled(true);
+				paper.setEnabled(true);
+				scissors.setEnabled(true);
+				lockChoice.setVisible(true);
+				rematch.setVisible(false);
+				againYes.setVisible(false);
+				againNo.setVisible(false);
+				playerRock1.setVisible(false);
+				playerRock2.setVisible(false);
+				playerPaper1.setVisible(false);
+				playerPaper2.setVisible(false);
+				playerScissors1.setVisible(false);
+				playerScissors2.setVisible(false);
+				lockedIn = false;
+				resultLabel.setText("---");
+				lockChoice.setBackground(Color.LIGHT_GRAY);
+				
+				player.setChoice(null);
+				
+			}
+		});
+		againYes.setForeground(Color.DARK_GRAY);
+		againYes.setBackground(Color.GREEN);
+		againYes.setBounds(111, 362, 79, 37);
+		againYes.setVisible(false);
+		contentPane.add(againYes);
+		
+		againNo = new JButton("No");
+		againNo.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String bye = " has left the game.";
+				
+				message = new Message(player, bye, LEAVING);
+				try {
+					oos.writeObject(message);
+				} catch (IOException e2) {
+					e2.printStackTrace();
+				}
+				
+				// Close Game
+				System.exit(0);
+			}
+		});
+		againNo.setForeground(Color.DARK_GRAY);
+		againNo.setBackground(Color.RED);
+		againNo.setBounds(200, 362, 85, 37);
+		againNo.setVisible(false);
+		contentPane.add(againNo);
+		
 		/**
 		 * Send out an introduction message object when
 		 * the gui is first created.
@@ -405,7 +477,7 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 	}
 	
 	@Override
-	public void propertyChange(PropertyChangeEvent event) {
+	public synchronized void propertyChange(PropertyChangeEvent event) {
 		// Read in the new message
 		Message newMessage = (Message)event.getNewValue();
 		
@@ -449,6 +521,7 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 					playerScissors2.setVisible(true);
 				}
 				
+				textArea1.append(rNickname + " has chosen " + rChoice + "\n");
 				// Game logic 
 				if(cChoice.equals(rChoice)) {
 					result = "It's a tie!!!!";
@@ -498,6 +571,9 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 				paper.setEnabled(false);
 				scissors.setEnabled(false);
 				lockChoice.setVisible(false);
+				rematch.setVisible(true);
+				againYes.setVisible(true);
+				againNo.setVisible(true);
 				
 			}
 			
@@ -517,6 +593,8 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 			}else{
 				playerScissors2.setVisible(true);
 			}
+			
+			textArea1.append(rNickname + " has chosen " + rChoice + "\n");
 			// Displayer Winner 
 			resultLabel.setText(rMessage);
 			
@@ -525,7 +603,62 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 			paper.setEnabled(false);
 			scissors.setEnabled(false);
 			lockChoice.setVisible(false);
-
+			rematch.setVisible(true);
+			againYes.setVisible(true);
+			againNo.setVisible(true);
+			
+		}else if(rType.equals(LEAVING)) {
+			// Initialize player label fields
+			player2.setText("");
+									
+			// Output the status message to the textArea1
+			textArea1.append(rNickname + rMessage + "\n");
+			
+			// Close sockets and all related streams
+			try {
+				oos.close();
+				socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			// Make listener null
+			lis = null;
+			
+			/**
+			 * Reconnect to the server 
+			 */
+			try {
+				socket = new Socket(ip, 3333);
+				oos = new ObjectOutputStream(socket.getOutputStream());
+			} catch (UnknownHostException e1) {
+				JOptionPane.showMessageDialog(null, 
+						"Error");
+				return;
+			} catch (IOException e1) {
+				JOptionPane.showMessageDialog(null, 
+						"Connection Faliure...");
+				return;
+			}
+			
+			lis = new InputListener(socket, this);
+			Thread t = new Thread(lis);
+			t.start();
+			
+			/**
+			 * Send out an introduction message object when
+			 * the gui is first created.
+			 */
+			String introMsg = " has joined the Game!\nYou may now pick an element!";
+			Message message = new Message(player, introMsg, INIT);
+			
+			try {
+				oos.writeObject(message);
+			} catch (IOException e2) {
+				e2.printStackTrace();
+			}
+				
 		}
+		
 	}
 }

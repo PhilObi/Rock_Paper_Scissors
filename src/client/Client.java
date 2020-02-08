@@ -166,11 +166,12 @@ public class Client extends JFrame {
 				// play button click event
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
+						String ip = ipAddress.getText();
 						try {
 							/**
 							 * Create game and pass in player Object and Socket
 							 */
-							RockPaperScissors frame = new RockPaperScissors(player,socket);
+							RockPaperScissors frame = new RockPaperScissors(player,socket,ip);
 							frame.setVisible(true);
 						} catch (Exception e) {
 							e.printStackTrace();
