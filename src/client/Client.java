@@ -87,8 +87,8 @@ public class Client extends JFrame {
 		JLabel startImage = new JLabel("");
 		startImage.setBounds(25, 5, 454, 150);
 		// Image Source: https://www.esquireme.com/sites/default/files/styles/full_img/public/images/2017/05/29/rock_paper_scissors__2x.png?itok=EB8fRWP9
-		startImage.setIcon(new ImageIcon("res/rock_paper_scissors.png"));
-		
+		startImage.setIcon(new ImageIcon(getClass().getClassLoader().getResource("rock_paper_scissors.png")));
+
 		contentPane.setLayout(null);
 		contentPane.add(nicknameLabel);
 		contentPane.add(nickName);
@@ -137,7 +137,7 @@ public class Client extends JFrame {
 				if(ip == null || ip.equals("")) {
 					ip = "localhost";
 				}else {
-					ip = nickName.getText();
+					ip = ipAddress.getText();
 				}
 				
 				/**

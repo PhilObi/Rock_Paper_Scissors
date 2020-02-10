@@ -255,37 +255,37 @@ public class RockPaperScissors extends JFrame implements PropertyChangeListener{
 		 * Element images
 		 */
 		playerRock1 = new JLabel("");
-		playerRock1.setIcon(new ImageIcon("res/rock.PNG"));
+		playerRock1.setIcon(new ImageIcon(getClass().getClassLoader().getResource("rock.PNG")));
 		playerRock1.setBounds(22, 105, 174, 160);
 		playerRock1.setVisible(false);
 		contentPane.add(playerRock1);
 
 		playerRock2 = new JLabel("");
-		playerRock2.setIcon(new ImageIcon("res/rock.PNG"));
+		playerRock2.setIcon(new ImageIcon(getClass().getClassLoader().getResource("rock.PNG")));
 		playerRock2.setBounds(230, 105, 174, 160);
 		playerRock2.setVisible(false);
 		contentPane.add(playerRock2);
 		
 		playerPaper1 = new JLabel("");
-		playerPaper1.setIcon(new ImageIcon("res/paper.PNG"));
+		playerPaper1.setIcon(new ImageIcon(getClass().getClassLoader().getResource("paper.PNG")));
 		playerPaper1.setBounds(22, 105, 174, 160);
 		playerPaper1.setVisible(false);
 		contentPane.add(playerPaper1);
 
 		playerPaper2 = new JLabel(""); 
-		playerPaper2.setIcon(new ImageIcon("res/paper.PNG"));
+		playerPaper2.setIcon(new ImageIcon(getClass().getClassLoader().getResource("paper.PNG")));
 		playerPaper2.setBounds(230, 105, 174, 160);
 		playerPaper2.setVisible(false);
 		contentPane.add(playerPaper2);
 		
 		playerScissors1 = new JLabel("");
-		playerScissors1.setIcon(new ImageIcon("res/scissors.PNG"));
+		playerScissors1.setIcon(new ImageIcon(getClass().getClassLoader().getResource("scissors.PNG")));
 		playerScissors1.setBounds(22, 105, 174, 160);
 		playerScissors1.setVisible(false);
 		contentPane.add(playerScissors1);
 
 		playerScissors2 = new JLabel("");
-		playerScissors2.setIcon(new ImageIcon("res/scissors.PNG"));
+		playerScissors2.setIcon(new ImageIcon(getClass().getClassLoader().getResource("scissors.PNG")));
 		playerScissors2.setBounds(230, 105, 174, 160);
 		playerScissors2.setVisible(false);
 		contentPane.add(playerScissors2);
